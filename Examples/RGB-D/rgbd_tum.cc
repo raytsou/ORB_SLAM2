@@ -23,11 +23,15 @@
 #include<algorithm>
 #include<fstream>
 #include<chrono>
+#include<unistd.h>
 
 #include<opencv2/core/core.hpp>
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/opencv.hpp>
 
 #include<System.h>
 
+using namespace cv;
 using namespace std;
 
 void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
@@ -77,8 +81,8 @@ int main(int argc, char **argv)
     for(int ni=0; ni<nImages; ni++)
     {
         // Read image and depthmap from file
-        imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
-        imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],CV_LOAD_IMAGE_UNCHANGED);
+        imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],IMREAD_UNCHANGED);
+        imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],IMREAD_UNCHANGED);
         double tframe = vTimestamps[ni];
 
         if(imRGB.empty())
@@ -88,7 +92,7 @@ int main(int argc, char **argv)
             return 1;
         }
 
-#ifdef COMPILEDWITHC11
+#if defined(COMPILEDWITHC11) || defined(COMPILEDWITHC14)
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 #else
         std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
@@ -97,7 +101,7 @@ int main(int argc, char **argv)
         // Pass the image to the SLAM system
         SLAM.TrackRGBD(imRGB,imD,tframe);
 
-#ifdef COMPILEDWITHC11
+#if defined(COMPILEDWITHC11) || defined(COMPILEDWITHC14)
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 #else
         std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();

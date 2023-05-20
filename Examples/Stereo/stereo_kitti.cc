@@ -19,6 +19,7 @@
 */
 
 
+#include<unistd.h>
 #include<iostream>
 #include<algorithm>
 #include<fstream>
@@ -26,9 +27,12 @@
 #include<chrono>
 
 #include<opencv2/core/core.hpp>
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/opencv.hpp>
 
 #include<System.h>
 
+using namespace cv;
 using namespace std;
 
 void LoadImages(const string &strPathToSequence, vector<string> &vstrImageLeft,
@@ -66,8 +70,8 @@ int main(int argc, char **argv)
     for(int ni=0; ni<nImages; ni++)
     {
         // Read left and right images from file
-        imLeft = cv::imread(vstrImageLeft[ni],CV_LOAD_IMAGE_UNCHANGED);
-        imRight = cv::imread(vstrImageRight[ni],CV_LOAD_IMAGE_UNCHANGED);
+        imLeft = cv::imread(vstrImageLeft[ni],IMREAD_UNCHANGED);
+        imRight = cv::imread(vstrImageRight[ni],IMREAD_UNCHANGED);
         double tframe = vTimestamps[ni];
 
         if(imLeft.empty())
@@ -77,7 +81,7 @@ int main(int argc, char **argv)
             return 1;
         }
 
-#ifdef COMPILEDWITHC11
+#if defined(COMPILEDWITHC11) || defined(COMPILEDWITHC14)
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 #else
         std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
@@ -86,7 +90,7 @@ int main(int argc, char **argv)
         // Pass the images to the SLAM system
         SLAM.TrackStereo(imLeft,imRight,tframe);
 
-#ifdef COMPILEDWITHC11
+#if defined(COMPILEDWITHC11) || defined(COMPILEDWITHC14)
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 #else
         std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
