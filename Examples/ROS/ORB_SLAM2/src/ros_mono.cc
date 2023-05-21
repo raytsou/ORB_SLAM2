@@ -89,6 +89,7 @@ int main(int argc, char **argv){
   if (save_trajectory) {
     SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
   }
+  SLAM->SaveMapPoints("/home/raytsou/ws/csgo_bot/src/ORB_SLAM2/maps/MapPointsSave.txt");
   return 0;
 }
 

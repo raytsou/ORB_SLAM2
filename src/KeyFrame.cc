@@ -380,6 +380,8 @@ void KeyFrame::UpdateConnections()
 
 void KeyFrame::AddChild(KeyFrame *pKF)
 {
+    if ((void *)this == (void *)pKF || mspChildrens.count(pKF)>0)
+        return;
     unique_lock<mutex> lockCon(mMutexConnections);
     mspChildrens.insert(pKF);
 }
@@ -536,6 +538,8 @@ void KeyFrame::SetBadFlag()
 
         mpParent->EraseChild(this);
         mTcp = Tcw*mpParent->GetPoseInverse();
+        if((void *)mpParent!=(void *)this)
+            mpParent->EraseChild(this);
         mbBad = true;
     }
 
