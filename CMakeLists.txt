@@ -35,7 +35,7 @@ endif()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package(OpenCV QUIET)
+find_package(OpenCV 4.2.0 QUIET)
 if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV not found.")
 endif()
